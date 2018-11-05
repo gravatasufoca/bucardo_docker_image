@@ -35,7 +35,7 @@ validate_string_attr() {
   local attr_name=$1
   local string_attr=$2
   local invalid_chars=$(echo $string_attr | sed -e "s/[[:alnum:]]//g" \
-                                                -e "s/\(.\|-\|_\)//g")
+                                                -e "s/\(.\|-\|_\)//g")  
   check_invalid_chars $attr_name $invalid_chars
 }
 
@@ -120,10 +120,12 @@ add_databases_to_bucardo() {
     db_id=$(db_attr $db_index id integer)
     db_pass=$(load_db_pass $db_index)
     run_bucardo_command "del db db$db_id --force"
-    run_bucardo_command "add db db$db_id dbname=\"$(db_attr $db_index dbname string)\" \
-                                user=\"$(db_attr $db_index user string)\" \
-                                pass=\"$db_pass\" \
-                                host=\"$(db_attr $db_index host string)\""
+
+    run_bucardo_command "add db db$db_id dbname=$(db_attr $db_index dbname string) \
+                                user=$(db_attr $db_index user string) \
+                                pass=$db_pass \
+                                host=$(db_attr $db_index host string)"
+    
     db_index=$(expr $db_index + 1)
   done
 }
